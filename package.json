@@ -1,0 +1,17 @@
+{
+  "name": "Shop",
+  "version": "1.0.0",
+  "description": "Creating a coursework with Node.js and Oracle Database",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3",
+    "body-parser": "^1.18.2",
+    "hbs": "^4.0.1",
+    "oracledb": "^2.2.0"
+  }
+}
