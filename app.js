@@ -87,6 +87,9 @@ async function selectAll(selectSql) {
 app.get("/profile",function (request,response) {
     response.render("profile.hbs");
 });
+app.get("/orders",function (request,response) {
+    response.render("Orders.hbs");
+});
 app.get("/api/profileData",function (request,response) {
     let SQLselect='SELECT name,surname,login,phone FROM client where Client_Id=(:userId)';
     let binds =

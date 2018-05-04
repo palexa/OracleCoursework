@@ -1,5 +1,5 @@
 body{
-    background: #7f7f7f;
+    background: white;
     display: flex;
     flex-direction: column;
     padding: 5px;
@@ -47,4 +47,11 @@ button:active {
     background: #4283c7;
     color: white;
     transition: background .7s;
+}
+.content{
+    justify-content: center;
+    align-content: center;
+    width: 50vw;
+    height: 50vh;
+    margin: 25vh 25vw;
 }
