@@ -4,6 +4,7 @@
     <link href="../css/styles.css" rel="stylesheet" type="text/css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../css/index.css" rel="stylesheet" type="text/css">
+    <link href="../css/modalWindow.css" rel="stylesheet" type="text/css">
     <script src="../js/jquery-3.3.1.js" ></script>
 </head>
 <body>
@@ -39,12 +40,34 @@
         <tbody id="monitors">
         </tbody>
     </table>
-<form>
-<button>Оформить заказ</button>
-</form>
+    <fieldset>
+        <legend>Выберите продавца:
+        </legend>
+        <form name='myForm' >
+            <select name='language' id='language'>
+                <option value='JS' selected='selected'>JavaScript</option>
+                <option value='Java'>Java</option>
+                <option value='CS'>C#</option>
+                <option value='CPP'>C++</option>
+            </select>
+        </form>
+        <div id='selection'></div>
+        </div>
+        <button >Create</button>
+    </fieldset>
 </main>
 {{> footer}}
 </body>
 <script src="../js/menu.js"></script>
 <script src="../js/Shop.js"></script>
+<script>
+        myForm.style.backgroundColor="green";
+        let languagesSelect = myForm.language;
+        function changeOption(){
+            let selection = document.getElementById("selection");
+            let selectedOption = languagesSelect.options[languagesSelect.selectedIndex];
+            selection.textContent = "Вы выбрали: " + selectedOption.text;
+        }
+        languagesSelect.addEventListener("change", changeOption);
+</script>
 </html>

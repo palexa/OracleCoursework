@@ -30,6 +30,21 @@ function GetMonitors() {
         }
     });
 }
+function GetEmployees() {
+    $.ajax({
+        url: "/api/computers",
+        type: "GET",
+        contentType: "application/json",
+        success: function (employees) {
+            var rows = "";
+            $.each(employees, function (index, user) {
+                // добавляем полученные элементы в таблицу
+                rows += row2(user);
+            });
+            $("#language").append(rows);
+        }
+    });
+}
 
 var row = function (computer) {
     let data="";
@@ -37,8 +52,15 @@ var row = function (computer) {
     for(let i=1;i<computer.length;i++){
         data+="<td>" + computer[i] + "</td>";
     }
-    data+="<td><a class='editLink' data-id='" + computer[0] + "'>Изменить</a> | " +
-        "<a class='removeLink' data-id='" + computer[0] + "'>Удалить</a></td></tr>";
+    return data;
+}
+
+var row = function (computer) {
+    let data="";
+    data+="<tr data-rowid='" + computer[0] + "'><td>" + computer[0] + "</td>";
+    for(let i=1;i<computer.length;i++){
+        data+="<td>" + computer[i] + "</td>";
+    }
     return data;
 }
 
