@@ -32,7 +32,7 @@ function GetMonitors() {
 }
 function GetEmployees() {
     $.ajax({
-        url: "/api/computers",
+        url: "/api/employees",
         type: "GET",
         contentType: "application/json",
         success: function (employees) {
@@ -55,12 +55,9 @@ var row = function (computer) {
     return data;
 }
 
-var row = function (computer) {
+var row2 = function (computer) {
     let data="";
-    data+="<tr data-rowid='" + computer[0] + "'><td>" + computer[0] + "</td>";
-    for(let i=1;i<computer.length;i++){
-        data+="<td>" + computer[i] + "</td>";
-    }
+    data+="<option value='" + computer[0] + "'>" + computer[1] + "</option>";
     return data;
 }
 
@@ -73,3 +70,4 @@ $("#profile_button").click(function () {
 });
 GetComputers();
 GetMonitors();
+GetEmployees();

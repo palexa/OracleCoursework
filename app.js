@@ -129,6 +129,18 @@ app.get("/api/monitors",function (request,response) {
             console.log(error);
         });
 });
+app.get("/api/employees",function (request,response) {
+    let SQLselect='SELECT * FROM employee';
+    selectAll(SQLselect)
+        .then(function (result) {
+            let res=result;
+            console.log(res.rows[0][1]);
+            response.send(res.rows);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+});
 app.get("/api/registration",function (request,response) {
     let login=request._parsedOriginalUrl.query;
     let loginExist=false;
