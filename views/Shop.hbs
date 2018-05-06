@@ -10,6 +10,7 @@
 {{> header}}
 <main>
 <h1>Магазин</h1>
+    <h3>Компьютеры</h3>
 <div id="List"></div>
 <table class="table table-condensed table-striped table-bordered">
     <thead>
@@ -23,11 +24,23 @@
         <th>Цена</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="computers">
     </tbody>
+
 </table>
+    <h3>Мониторы</h3>
+    <table class="table table-condensed table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Имя</th>
+        </tr>
+        </thead>
+        <tbody id="monitors">
+        </tbody>
+    </table>
 <form>
-<button>Список</button>
+<button>Оформить заказ</button>
 </form>
 </main>
 {{> footer}}

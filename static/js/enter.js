@@ -37,6 +37,10 @@ function LogIn(login,password) {
     })
 }
 
+$("#registration_button").click(function (e) {
+    e.preventDefault();
+    window.location="/Registration";
+});
 $("form").submit(function (e) {
     e.preventDefault();
     let login = this.elements["login"].value;

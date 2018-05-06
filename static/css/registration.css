@@ -1,0 +1,56 @@
+.form_box {
+    width: 300px;
+    margin: 40px auto;
+}
+.form_box label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #444444;
+    display: block;
+}
+.form_box input {
+    display: block;
+    border: 2px solid #cfcfcf;
+    font-size: 14px;
+    color: #444444;
+    padding: 7px 7px 8px;
+    width: 250px;
+    margin-bottom: 20px;
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+}
+.form_box .req:invalid {
+    border: 2px solid red;
+}
+.form_box .req:valid {
+    border: 2px solid green;
+}
+.form_box input:focus {
+    outline: none;
+    border-color: #07a6e6;
+}
+.form_box .btn_submit {
+    border: none;
+    width: 180px;
+    text-align: center;
+    background: #07a6e6;
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    cursor: pointer;
+    height: 35px;
+    line-height: 28px;
+    padding: 0;
+}
+.form_box .btn_submit:hover {
+    background: #009ac2;
+}
+.form_box .btn_submit:active {
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+.form_box .btn_submit.disabled,
+.form_box .btn_submit.disabled:hover {
+    background: #afdde6;
+    cursor: default;
+}

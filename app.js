@@ -107,11 +107,56 @@ app.get("/api/profileData",function (request,response) {
         });
 });
 app.get("/api/computers",function (request,response) {
-    let SQLselect='SELECT * FROM computer';
+    let SQLselect='SELECT model_id,name,processor,video,disk,RAM,price FROM computer';
     selectAll(SQLselect)
         .then(function (result) {
             let res=result;
             response.send(res.rows);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+});
+app.get("/api/monitors",function (request,response) {
+    let SQLselect='SELECT * FROM monitor';
+    selectAll(SQLselect)
+        .then(function (result) {
+            let res=result;
+            console.log(res.rows[0][1]);
+            response.send(res.rows);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+});
+app.get("/api/registration",function (request,response) {
+    let login=request._parsedOriginalUrl.query;
+    let loginExist=false;
+    let SQLselect='SELECT login FROM client';
+    selectAll(SQLselect)
+        .then(function (result) {
+            let res=result;
+            return res.rows;
+        })
+        .then(function (rows) {
+            for (let i=0;i<rows.length;i++){
+               if(login==rows[i][0]){
+                   console.log("Exist!!!");
+                   loginExist=true;
+               }
+            }
+        })
+        .then(function () {
+            if(loginExist){
+                response.send(loginExist);
+            }
+            else{
+                console.log("Не найден");
+                response.send(loginExist)
+            }
+        })
+        .then(function () {
+            loginExist=false;
         })
         .catch(function (error) {
             console.log(error);
@@ -128,6 +173,9 @@ app.get("/shop",function (request,response) {
     else{
         response.render("Enter.hbs")
     }
+});
+app.get("/Registration",function (response,request) {
+    request.render("Registration.hbs");
 });
 app.get("/index",function (request,response) {
     response.render("crud.hbs")
@@ -204,9 +252,9 @@ app.post("/api/users", jsonParser, function (req, res) {
             num: { type: oracledb.DB_TYPE_VARCHAR,maxSize: 20 }
         }
     };
-    let insertSql = "INSERT INTO users values (:login, :password ,:name, :surname , :num)";
+    let insertSql = "INSERT INTO CLIENT (name,surname,phone,login,password) values (:name, :surname ,:phone, :login , :password)";
     let binds =
-        { login: login, password: password ,name: name, surname: surname,num:number }
+        { name: name, surname: surname ,phone: number, login: login,password:password }
     ;
 
     insert(insertSql,binds,options);

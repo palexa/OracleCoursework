@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список пользователей</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="../js/jquery-3.3.1.js"></script>
+<link href="../css/registration.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="form_box">
+
+    <label for="user_name">Имя пользователя:</label>
+    <input type="text" class="rfield"  id="name" required />
+
+    <label for="user_family">Фамилия пользователя</label>
+    <input type="text" class="rfield" id="surname" required />
+
+    <label for="user_name">Логин:</label>
+    <input type="text" class="rfield" id="login" required />
+
+    <label for="user_family">Пароль</label>
+    <input type="password" class="rfield" id="password" required />
+
+    <label for="user_phone">Телефон пользователя:</label>
+    <input type="text" class="rfield"  id="num" required />
+
+    <button type="submit" id="button" class="btn_submit">Submit</button>
+    <h3 style="color:red;" id="incorrect"></h3>
+</div>
+<script src="../js/registration.js"></script>
+</body>
+</html>
