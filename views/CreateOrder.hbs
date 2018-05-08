@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список пользователей</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <link href="../css/styles.css">
+</head>
+<body>
+<h2>Оформление заказа</h2>
+<form name='myForm' class="myForm">
+    <select name='computer' id='computer' size="4">
+    </select>
+    <select name='monitor' id='monitor' size="4">
+    </select>
+</form>
+<form name="userForm">
+    <input type="hidden" name="id" value="0" />
+    <div class="form-group">
+        <label for="name">Компьютер:</label>
+        <input class="form-control" name="computer" id="currentComp" disabled/>
+    </div>
+    <div class="form-group">
+        <label for="age">Монитор:</label>
+        <input class="form-control" name="monitor" id="currentMon" disabled/>
+    </div>
+</form>
+<div class="panel-body">
+    <button type="submit" class="btn btn-sm btn-primary" id="save" disabled>Заказать</button>
+</div>
+<table class="table table-condensed table-striped table-bordered">
+    <thead><tr><th>Компьютер</th><th>Монитор</th></tr></thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+    let CurrentOrderId;
+    let computerSelect = myForm.computer;
+    let monitorSelect = myForm.monitor;
+    let CurrentComputerId;
+    let CurrentMonitorId;
+    function GetCurrentOrder() {
+        $.ajax({
+            url: "/api/currentOrder",
+            type: "GET",
+            contentType: "application/json",
+            success: function (currentOrder) {
+                CurrentOrderId=currentOrder;
+            }
+        });
+    }
+    function GetComputers() {
+        $.ajax({
+            url: "/api/computers",
+            type: "GET",
+            contentType: "application/json",
+            success: function (computers) {
+                var rows = "";
+                $.each(computers, function (index, user) {
+                    // добавляем полученные элементы в таблицу
+                    rows += options(user);
+                })
+                $("#computer").append(rows);
+            }
+        });
+    }
+    function GetMonitors() {
+        $.ajax({
+            url: "/api/monitors",
+            type: "GET",
+            contentType: "application/json",
+            success: function (monitors) {
+                var rows = "";
+                $.each(monitors, function (index, user) {
+                    // добавляем полученные элементы в таблицу
+                    rows += options(user);
+                });
+                $("#monitor").append(rows);
+            }
+        });
+    }
+    function CreateSet(OrderId,ComputerId,MonitorId,monitor,computer) {
+        $.ajax({
+            url: "api/createSet",
+            contentType: "application/json",
+            method: "POST",
+            data: JSON.stringify({
+                order: OrderId,
+                computer: ComputerId,
+                monitor:MonitorId
+            }),
+            success: function (user) {
+
+                //reset();
+                $("table tbody").append(row(monitor,computer));
+            }
+        })
+    }
+    var row = function (monitor,computer) {
+        let data="";
+        data+="<tr><td>" + monitor + "</td>";
+        data+="<td>" + computer + "</td></tr>";
+        return data;
+    }
+    var options = function (employee) {
+        let data="";
+        data+="<option value='" + employee[0] + "'>" + employee[1] + "</option>";
+        return data;
+    };
+    function changeComputer(){
+        let computer = document.querySelector("#currentComp");
+        let selectedOption = computerSelect.options[computerSelect.selectedIndex];
+        computer.value = selectedOption.text;
+        CurrentComputerId=selectedOption.value;
+        if(document.querySelector("#currentMon").value!=""){
+            $('#save').removeAttr('disabled');
+        }
+    }
+    function changeMonitor(){
+        let monitor = document.querySelector("#currentMon");
+        let selectedOption = monitorSelect.options[monitorSelect.selectedIndex];
+        monitor.value = selectedOption.text;
+        CurrentMonitorId = selectedOption.value;
+        if(document.querySelector("#currentComp").value!=""){
+            $('#save').removeAttr('disabled');
+        }
+    }
+    computerSelect.addEventListener("change", changeComputer);
+    monitorSelect.addEventListener("change", changeMonitor);
+    
+    $("#save").click(function () {
+        CreateSet(CurrentOrderId,CurrentComputerId,CurrentMonitorId,
+                monitorSelect.options[monitorSelect.selectedIndex].text,
+                computerSelect.options[computerSelect.selectedIndex].text);
+    });
+    // загрузка текущего заказа
+   GetCurrentOrder();
+    GetMonitors();
+    GetComputers();
+
+</script>
+</body>
+</html>

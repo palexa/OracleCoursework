@@ -24,6 +24,7 @@ button{
     margin-top: 12px;
     height: 50px;
     display: inline-block;
+    background: #69db75;
     line-height: 20px;
     padding: 12px;
     font-size: 14px;
@@ -48,6 +49,13 @@ button:active {
     color: white;
     transition: background .7s;
 }
+button:disabled {
+    text-align: center;
+    border: 1px solid #fa1b1b;
+    background: #fc5858;
+    color: white;
+    transition: background .7s;
+}
 .content{
     justify-content: center;
     align-content: center;
@@ -56,3 +64,7 @@ button:active {
     margin: 25vh 25vw;
 }
 
+.myForm{
+    display: flex;
+    flex-direction: column;
+}

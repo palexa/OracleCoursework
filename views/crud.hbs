@@ -174,12 +174,12 @@
     $("body").on("click", ".editLink", function () {
         var id = $(this).data("id");
         GetUser(id);
-    })
+    });
     // нажимаем на ссылку Удалить
     $("body").on("click", ".removeLink", function () {
         var id = $(this).data("id");
         DeleteUser(id);
-    })
+    });
 
     // загрузка пользователей
     //GetUsers();

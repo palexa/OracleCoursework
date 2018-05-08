@@ -39,9 +39,20 @@ function GetEmployees() {
             var rows = "";
             $.each(employees, function (index, user) {
                 // добавляем полученные элементы в таблицу
-                rows += row2(user);
+                rows += options(user);
             });
             $("#language").append(rows);
+        }
+    });
+}
+
+function NewOrder(employeeId) {
+    $.ajax({
+        url: "/api/newOrder/?"+employeeId,
+        type: "GET",
+        contentType: "application/json",
+        success: function () {
+            window.location="/CreateOrder";
         }
     });
 }
@@ -55,19 +66,36 @@ var row = function (computer) {
     return data;
 }
 
-var row2 = function (computer) {
+var options = function (employee) {
     let data="";
-    data+="<option value='" + computer[0] + "'>" + computer[1] + "</option>";
+    data+="<option value='" + employee[0] + "'>" + employee[1] + "</option>";
     return data;
 }
 
 $("form").submit(function (e) {
     e.preventDefault();
 });
-$("#profile_button").click(function () {
-    console.log("Profile");
-    window.location="profile";
+
+$("#create").click(function () {
+NewOrder(selectedId);
 });
+// $("#profile_button").click(function () {
+//     console.log("Profile");
+//     window.location="profile";
+// });
+
+myForm.style.backgroundColor="green";
+let languagesSelect = myForm.language;
+let selectedId=0;
+function changeOption(){
+    let selection = document.getElementById("selection");
+    let selectedOption = languagesSelect.options[languagesSelect.selectedIndex];
+    selection.textContent = "Вы выбрали: " + selectedOption.text;
+    $('#create').removeAttr('disabled');
+    selectedId=selectedOption.value;
+}
+languagesSelect.addEventListener("change", changeOption);
+
 GetComputers();
 GetMonitors();
 GetEmployees();

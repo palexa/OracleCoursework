@@ -7,6 +7,7 @@ let hbs=require("hbs");
 let jsonParser = bodyParser.json();
 let app=express();
 let userId=0;
+let employeeId=0;
 let logIn=false;
 app.use(express.static(__dirname + "/static"));
 hbs.registerPartials(__dirname + "/views/partials");
@@ -19,9 +20,7 @@ async function insert(insertSql,binds,options) {
 
     try {
         conn = await oracledb.getConnection(dbConfig);
-
-        //await conn.execute(truncateSql);
-console.log("Have connect!");
+        console.log("Соединение установленно: "+conn);
         result = await conn.execute(insertSql, binds, options);
 
         console.log("Result is:", result);
@@ -107,6 +106,7 @@ app.get("/api/profileData",function (request,response) {
         });
 });
 app.get("/api/computers",function (request,response) {
+    console.log("Получение компьютеров");
     let SQLselect='SELECT model_id,name,processor,video,disk,RAM,price FROM computer';
     selectAll(SQLselect)
         .then(function (result) {
@@ -118,11 +118,11 @@ app.get("/api/computers",function (request,response) {
         });
 });
 app.get("/api/monitors",function (request,response) {
+    console.log("Получение мониторов");
     let SQLselect='SELECT * FROM monitor';
     selectAll(SQLselect)
         .then(function (result) {
             let res=result;
-            console.log(res.rows[0][1]);
             response.send(res.rows);
         })
         .catch(function (error) {
@@ -141,6 +141,27 @@ app.get("/api/employees",function (request,response) {
             console.log(error);
         });
 });
+app.get("/api/newOrder",function (request,response) {
+    let id=request._parsedOriginalUrl.query;
+    employeeId=id;
+    let options = {
+        autoCommit: true,
+        bindDefs: {
+            client_id: { type: oracledb.DB_TYPE_NUMBER},
+            employee_id: { type: oracledb.DB_TYPE_NUMBER }
+        }
+    };
+    let insertSql = "INSERT INTO \"Order\" (client_id,employe_id) values (:client_id, :employee_id)";
+    let binds =
+        { client_id: userId, employee_id: employeeId}
+    ;
+
+    insert(insertSql,binds,options);
+    response.send();
+});
+app.get("/CreateOrder",function (request,response) {
+    response.render("CreateOrder.hbs");
+});
 app.get("/api/registration",function (request,response) {
     let login=request._parsedOriginalUrl.query;
     let loginExist=false;
@@ -152,10 +173,10 @@ app.get("/api/registration",function (request,response) {
         })
         .then(function (rows) {
             for (let i=0;i<rows.length;i++){
-               if(login==rows[i][0]){
-                   console.log("Exist!!!");
-                   loginExist=true;
-               }
+                if(login==rows[i][0]){
+                    console.log("Exist!!!");
+                    loginExist=true;
+                }
             }
         })
         .then(function () {
@@ -188,6 +209,20 @@ app.get("/shop",function (request,response) {
 });
 app.get("/Registration",function (response,request) {
     request.render("Registration.hbs");
+});
+app.get("/api/currentOrder",function (request,response) {
+    console.log("Получение текущего заказа");
+    let SQLselect='SELECT order_id FROM \"Order\" where client_id=(:userId) and employe_id=(:employeeId) '
+    let binds ={ userId:userId,employeeId:employeeId };
+    let options =  {};
+    select(SQLselect,binds,options)
+        .then(function (result) {
+            let res=result;
+            response.send(res.rows[res.rows.length-1]);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 });
 app.get("/index",function (request,response) {
     response.render("crud.hbs")
@@ -315,23 +350,23 @@ app.post("/api/login",jsonParser,function (request,response) {
             console.log(error);
         });
 });
-
-app.put("/api/users/:name,:surname,:number,:login,:password",function (request,response) {
-    let name=request.params.name;
-    let surname=request.params.surname;
-    let number=request.params.number;
-    let login=request.params.login;
-    let password=request.params.password;
+app.post("/api/createSet",jsonParser,function (req,res) {
+    console.log("Создание комплекта");
+    //if(!req.body) return res.sendStatus(400);
+    let orderId = req.body.order;
+    let computerId = req.body.computer;
+    let monitorId = req.body.monitor;
+    //console.log("Что прислали "+orderId+" "+computerId+" "+monitorId);
+    let options = {
+        autoCommit: true
+    };
+    let insertSql = "INSERT INTO \"Set\" (Order_Id,Model_Id,Monitor_Id) values (:orderId, :computerId ,:monitorId)";
+    let binds =
+        { orderId: orderId[0],computerId:computerId,monitorId:monitorId}
+    ;
+    insert(insertSql,binds,options);
+    res.send("кидаем в бд");
 });
-app.delete("/api/users/:name,:surname,:number,:login,:password",function (request,response) {
-    let name=request.params.name;
-    let surname=request.params.surname;
-    let number=request.params.number;
-    let login=request.params.login;
-    let password=request.params.password;
-});
-
-
 
 // Report an error
 
