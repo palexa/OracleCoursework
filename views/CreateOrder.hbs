@@ -35,7 +35,8 @@
     <tbody>
     </tbody>
 </table>
-
+<button class="btn btn-sm btn-primary" id="create">Оформить заказ</button>
+<button class="btn btn-sm btn-primary" id="cancel">Сбросить</button>
 <script>
     let CurrentOrderId;
     let computerSelect = myForm.computer;
@@ -128,6 +129,18 @@
             $('#save').removeAttr('disabled');
         }
     }
+    function DeleteOrder(id) {
+        $.ajax({
+            url: "api/orders/"+id,
+            contentType: "application/json",
+            method: "DELETE",
+            success: function (user) {
+                console.log(user);
+                window.location="/shop";
+               // $("tr[data-rowid='" + user.id + "']").remove();
+            }
+        })
+    }
     computerSelect.addEventListener("change", changeComputer);
     monitorSelect.addEventListener("change", changeMonitor);
     
@@ -135,6 +148,13 @@
         CreateSet(CurrentOrderId,CurrentComputerId,CurrentMonitorId,
                 monitorSelect.options[monitorSelect.selectedIndex].text,
                 computerSelect.options[computerSelect.selectedIndex].text);
+    });
+
+    $("#create").click(function () {
+        window.location="/shop";
+    });
+    $("#cancel").click(function () {
+        DeleteOrder(CurrentOrderId);
     });
     // загрузка текущего заказа
    GetCurrentOrder();

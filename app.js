@@ -83,6 +83,29 @@ async function selectAll(selectSql) {
         }
     }
 }
+async function SimpleExecute(insertSql,binds=[],options={}) {
+    let conn;
+    let result;
+
+    try {
+        conn = await oracledb.getConnection(dbConfig);
+        console.log("Соединение установленно: "+conn);
+        result = await conn.execute(insertSql, binds, options);
+
+        console.log("Result is:", result);
+        return result;
+    } catch (err) {
+        console.error(err);
+    } finally {
+        if (conn) {
+            try {
+                await conn.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+}
 app.get("/profile",function (request,response) {
     response.render("profile.hbs");
 });
@@ -91,9 +114,7 @@ app.get("/orders",function (request,response) {
 });
 app.get("/api/profileData",function (request,response) {
     let SQLselect='SELECT name,surname,login,phone FROM client where Client_Id=(:userId)';
-    let binds =
-        { userId:userId }
-    ;
+    let binds = { userId:userId };
     let options =  { maxRows: 1};
     select(SQLselect,binds,options)
         .then(function (result) {
@@ -212,7 +233,7 @@ app.get("/Registration",function (response,request) {
 });
 app.get("/api/currentOrder",function (request,response) {
     console.log("Получение текущего заказа");
-    let SQLselect='SELECT order_id FROM \"Order\" where client_id=(:userId) and employe_id=(:employeeId) '
+    let SQLselect='SELECT order_id FROM \"Order\" where client_id=(:userId) and employe_id=(:employeeId) order by order_id asc';
     let binds ={ userId:userId,employeeId:employeeId };
     let options =  {};
     select(SQLselect,binds,options)
@@ -279,6 +300,20 @@ select(SQLselect,binds,options)
     .catch(function (error) {
         console.log(error);
     });
+});
+app.get("/api/clientOrders",function (req,res) {
+   let SQL=`select
+   "Order".order_id ,computer.name,monitor.name from "Order" 
+   right join "Set" on "Order".order_id="Set".ORDER_ID
+   left join computer on "Set".model_id=computer.model_id 
+   left join monitor on "Set".monitor_id=monitor.monitor_id
+   where "Order".client_id=(:userId)
+   `;
+   let binds={userId:userId};
+   SimpleExecute(SQL,binds)
+       .then(function (resource) {
+           res.send(resource.rows);
+       });
 });
 app.post("/api/users", jsonParser, function (req, res) {
     console.log(req.body);
@@ -367,7 +402,22 @@ app.post("/api/createSet",jsonParser,function (req,res) {
     insert(insertSql,binds,options);
     res.send("кидаем в бд");
 });
-
+app.delete("/api/orders/:id", function(req, res){
+    let id = req.params.id;
+    let SQL1=`delete from \"Set\" where order_id=(:id)`;
+    let binds={id:id};
+    let options={
+        autoCommit: true
+    };
+    let SQL2=`delete from \"Order\" where order_id=(:id)`;
+    SimpleExecute(SQL1,binds,options)
+        .then(function(result){SimpleExecute(SQL2,binds,options)})
+        .then(function(result)
+        {console.log("Deleted");
+        res.send(true);
+        });
+    console.log("Номер заказа: "+id);
+});
 // Report an error
 
 

@@ -9,10 +9,48 @@
 <body>
 {{> header}}
 <main>
-
+    <h3>Мониторы</h3>
+    <table class="table table-condensed table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Номер Заказа</th>
+            <th>Компьютер</th>
+            <th>Монитор</th>
+        </tr>
+        </thead>
+        <tbody id="orders">
+        </tbody>
+    </table>
 </main>
 {{> footer}}
 </body>
 <script src="../js/menu.js"></script>
-<script src="../js/profile.js"></script>
+<script>
+    function GetMyOrders() {
+        $.ajax({
+            url: "/api/clientOrders",
+            type: "GET",
+            contentType: "application/json",
+            success: function (Orders) {
+                let rows = "";
+                $.each(Orders, function (index, order) {
+                    // добавляем полученные элементы в таблицу
+                    rows += OrderRow(order);
+                });
+                $("#orders").append(rows);
+            }
+        });
+    }
+
+    let OrderRow = function (order) {
+        let data="";
+        data+="<tr>"+"<td>" + order[0] + "</td>"
+                +"<td>" + order[1] + "</td>"
+                +"<td>" + order[2] + "</td>";
+
+        return data;
+    };
+
+    GetMyOrders();
+</script>
 </html>
