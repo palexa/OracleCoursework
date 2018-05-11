@@ -1,9 +1,12 @@
 // var http = require('http');
 let express=require("express");
 let oracledb = require('oracledb');
-let dbConfig = require('./dbconfig.js');
 let bodyParser = require("body-parser");
 let hbs=require("hbs");
+let MD5=require("md5");
+let dbConfig = require('./dbconfig.js');
+let dbConfig_client = require('./dbconfig_client.js');
+
 let jsonParser = bodyParser.json();
 let app=express();
 let userId=0;
@@ -14,39 +17,17 @@ hbs.registerPartials(__dirname + "/views/partials");
 app.set("view engine", "hbs");
 
 
-async function insert(insertSql,binds,options) {
+async function SimpleExecute(insertSql,binds=[],options={},client=true) {
     let conn;
     let result;
 
     try {
-        conn = await oracledb.getConnection(dbConfig);
-        console.log("Соединение установленно: "+conn);
+        if(client){conn = await oracledb.getConnection(dbConfig_client);}
+        else{conn = await oracledb.getConnection(dbConfig);}
+        console.log("Соединение установленно");
         result = await conn.execute(insertSql, binds, options);
 
-        console.log("Result is:", result);
-
-    } catch (err) {
-        console.error(err);
-    } finally {
-        if (conn) {
-            try {
-                await conn.close();
-            } catch (err) {
-                console.error(err);
-            }
-        }
-    }
-}
-async function select(selectSql,binds,options) {
-    let conn;
-    let result;
-
-    try {
-        conn = await oracledb.getConnection(dbConfig);
-
-        //await conn.execute(truncateSql);
-        console.log("Has connect!");
-        result = await conn.execute(selectSql, binds,options);
+        //console.log("Result is:", result);
         return result;
     } catch (err) {
         console.error(err);
@@ -60,52 +41,7 @@ async function select(selectSql,binds,options) {
         }
     }
 }
-async function selectAll(selectSql) {
-    let conn;
-    let result;
 
-    try {
-        conn = await oracledb.getConnection(dbConfig);
-
-        //await conn.execute(truncateSql);
-        console.log("Has connect!");
-        result = await conn.execute(selectSql);
-        return result;
-    } catch (err) {
-        console.error(err);
-    } finally {
-        if (conn) {
-            try {
-                await conn.close();
-            } catch (err) {
-                console.error(err);
-            }
-        }
-    }
-}
-async function SimpleExecute(insertSql,binds=[],options={}) {
-    let conn;
-    let result;
-
-    try {
-        conn = await oracledb.getConnection(dbConfig);
-        console.log("Соединение установленно: "+conn);
-        result = await conn.execute(insertSql, binds, options);
-
-        console.log("Result is:", result);
-        return result;
-    } catch (err) {
-        console.error(err);
-    } finally {
-        if (conn) {
-            try {
-                await conn.close();
-            } catch (err) {
-                console.error(err);
-            }
-        }
-    }
-}
 app.get("/profile",function (request,response) {
     response.render("profile.hbs");
 });
@@ -113,13 +49,13 @@ app.get("/orders",function (request,response) {
     response.render("Orders.hbs");
 });
 app.get("/api/profileData",function (request,response) {
-    let SQLselect='SELECT name,surname,login,phone FROM client where Client_Id=(:userId)';
+    let SQLselect='SELECT name,surname,login,phone FROM system.client where Client_Id=(:userId)';
     let binds = { userId:userId };
     let options =  { maxRows: 1};
-    select(SQLselect,binds,options)
+    SimpleExecute(SQLselect,binds,options,true)
         .then(function (result) {
             let res=result;
-            console.log(res.rows);
+            //console.log(res.rows);
             response.send(res.rows);
         })
         .catch(function (error) {
@@ -128,8 +64,8 @@ app.get("/api/profileData",function (request,response) {
 });
 app.get("/api/computers",function (request,response) {
     console.log("Получение компьютеров");
-    let SQLselect='SELECT model_id,name,processor,video,disk,RAM,price FROM computer';
-    selectAll(SQLselect)
+    let SQLselect='SELECT model_id,name,processor,video,disk,RAM,price FROM system.computer';
+    SimpleExecute(SQLselect,[],{},true)
         .then(function (result) {
             let res=result;
             response.send(res.rows);
@@ -140,8 +76,8 @@ app.get("/api/computers",function (request,response) {
 });
 app.get("/api/monitors",function (request,response) {
     console.log("Получение мониторов");
-    let SQLselect='SELECT * FROM monitor';
-    selectAll(SQLselect)
+    let SQLselect='SELECT * FROM system.monitor';
+    SimpleExecute(SQLselect,[],{},true)
         .then(function (result) {
             let res=result;
             response.send(res.rows);
@@ -151,11 +87,11 @@ app.get("/api/monitors",function (request,response) {
         });
 });
 app.get("/api/employees",function (request,response) {
-    let SQLselect='SELECT * FROM employee';
-    selectAll(SQLselect)
+    let SQLselect='SELECT * FROM system.employee';
+    SimpleExecute(SQLselect,[],{},false)
         .then(function (result) {
             let res=result;
-            console.log(res.rows[0][1]);
+            //console.log(res.rows[0][1]);
             response.send(res.rows);
         })
         .catch(function (error) {
@@ -172,12 +108,12 @@ app.get("/api/newOrder",function (request,response) {
             employee_id: { type: oracledb.DB_TYPE_NUMBER }
         }
     };
-    let insertSql = "INSERT INTO \"Order\" (client_id,employe_id) values (:client_id, :employee_id)";
+    let insertSql = "INSERT INTO system.\"Order\" (client_id,employe_id) values (:client_id, :employee_id)";
     let binds =
         { client_id: userId, employee_id: employeeId}
     ;
 
-    insert(insertSql,binds,options);
+    SimpleExecute(insertSql,binds,options,false);
     response.send();
 });
 app.get("/CreateOrder",function (request,response) {
@@ -186,8 +122,8 @@ app.get("/CreateOrder",function (request,response) {
 app.get("/api/registration",function (request,response) {
     let login=request._parsedOriginalUrl.query;
     let loginExist=false;
-    let SQLselect='SELECT login FROM client';
-    selectAll(SQLselect)
+    let SQLselect='SELECT login FROM system.client';
+    SimpleExecute(SQLselect,[],{},true)
         .then(function (result) {
             let res=result;
             return res.rows;
@@ -233,10 +169,10 @@ app.get("/Registration",function (response,request) {
 });
 app.get("/api/currentOrder",function (request,response) {
     console.log("Получение текущего заказа");
-    let SQLselect='SELECT order_id FROM \"Order\" where client_id=(:userId) and employe_id=(:employeeId) order by order_id asc';
+    let SQLselect='SELECT order_id FROM system.\"Order\" where client_id=(:userId) and employe_id=(:employeeId) order by order_id asc';
     let binds ={ userId:userId,employeeId:employeeId };
     let options =  {};
-    select(SQLselect,binds,options)
+    SimpleExecute(SQLselect,binds,options,true)
         .then(function (result) {
             let res=result;
             response.send(res.rows[res.rows.length-1]);
@@ -249,21 +185,18 @@ app.get("/index",function (request,response) {
     response.render("crud.hbs")
 });
 app.get("/api/users/:login&:password",function (request,response) {
-    console.log("hey");
+
 var login=request.params.login;
-console.log(login);
+//console.log(login);
 var password=request.params.password;
-console.log(password);
-let SQLselect='SELECT pass,name,surname,num FROM users WHERE login= :login';
+//console.log(password);
+let SQLselect='SELECT pass,name,surname,num FROM system.users WHERE login= :login';
     let options =  { maxRows: 1
-        //, outFormat: oracledb.OBJECT  // query result format
-        //, extendedMetaData: true      // get extra metadata
-        //, fetchArraySize: 100         // internal buffer allocation size for tuning
     };
     let binds =
         [login]
     ;
-select(SQLselect,binds,options)
+SimpleExecute(SQLselect,binds,options,true)
     .then(function (result) {
        let res=result;
        //Проверка на наличие логина
@@ -303,23 +236,24 @@ select(SQLselect,binds,options)
 });
 app.get("/api/clientOrders",function (req,res) {
    let SQL=`select
-   "Order".order_id ,computer.name,monitor.name from "Order" 
-   right join "Set" on "Order".order_id="Set".ORDER_ID
-   left join computer on "Set".model_id=computer.model_id 
-   left join monitor on "Set".monitor_id=monitor.monitor_id
-   where "Order".client_id=(:userId)
+   "Order".order_id ,computer.name,monitor.name from system."Order" 
+   right join system."Set" on "Order".order_id="Set".ORDER_ID
+   left join system.computer on "Set".model_id=computer.model_id 
+   left join system.monitor on "Set".monitor_id=monitor.monitor_id
+   where "Order".client_id=(:userId) order by "Order".order_id
    `;
    let binds={userId:userId};
-   SimpleExecute(SQL,binds)
+   SimpleExecute(SQL,binds,{},true)
        .then(function (resource) {
            res.send(resource.rows);
        });
 });
 app.post("/api/users", jsonParser, function (req, res) {
-    console.log(req.body);
+    //console.log(req.body);
     if(!req.body) return res.sendStatus(400);
     let login = req.body.login;
     let password = req.body.password;
+    password=MD5(password);
     let name = req.body.name;
     let surname = req.body.surname;
     let number = req.body.num;
@@ -334,29 +268,27 @@ app.post("/api/users", jsonParser, function (req, res) {
             num: { type: oracledb.DB_TYPE_VARCHAR,maxSize: 20 }
         }
     };
-    let insertSql = "INSERT INTO CLIENT (name,surname,phone,login,password) values (:name, :surname ,:phone, :login , :password)";
+    let insertSql = "INSERT INTO system.CLIENT (name,surname,phone,login,password) values (:name, :surname ,:phone, :login , :password)";
     let binds =
         { name: name, surname: surname ,phone: number, login: login,password:password }
     ;
 
-    insert(insertSql,binds,options);
+    SimpleExecute(insertSql,binds,options,true);
     res.send("кидаем в бд");
 });
 app.post("/api/login",jsonParser,function (request,response) {
-    console.log(request.body);
+    //console.log(request.body);
     if(!request.body) return response.sendStatus(400);
     let login=request.body.login;
     let password = request.body.password;
-    let SQLselect='SELECT password,name,surname,phone, Client_Id FROM client WHERE login= :login';
+    password=MD5(password);
+    let SQLselect='SELECT password,name,surname,phone, Client_Id FROM system.client WHERE login= :login';
     let options =  { maxRows: 1
-        //, outFormat: oracledb.OBJECT  // query result format
-        //, extendedMetaData: true      // get extra metadata
-        //, fetchArraySize: 100         // internal buffer allocation size for tuning
     };
     let binds =
         [login]
     ;
-    select(SQLselect,binds,options)
+    SimpleExecute(SQLselect,binds,options,true)
         .then(function (result) {
             let res=result;
             //Проверка на наличие логина
@@ -395,38 +327,30 @@ app.post("/api/createSet",jsonParser,function (req,res) {
     let options = {
         autoCommit: true
     };
-    let insertSql = "INSERT INTO \"Set\" (Order_Id,Model_Id,Monitor_Id) values (:orderId, :computerId ,:monitorId)";
+    let insertSql = "INSERT INTO system.\"Set\" (Order_Id,Model_Id,Monitor_Id) values (:orderId, :computerId ,:monitorId)";
     let binds =
         { orderId: orderId[0],computerId:computerId,monitorId:monitorId}
     ;
-    insert(insertSql,binds,options);
+    SimpleExecute(insertSql,binds,options,false);
     res.send("кидаем в бд");
 });
 app.delete("/api/orders/:id", function(req, res){
     let id = req.params.id;
-    let SQL1=`delete from \"Set\" where order_id=(:id)`;
+    let SQL1=`delete from system.\"Set\" where order_id=(:id)`;
     let binds={id:id};
     let options={
         autoCommit: true
     };
-    let SQL2=`delete from \"Order\" where order_id=(:id)`;
-    SimpleExecute(SQL1,binds,options)
-        .then(function(result){SimpleExecute(SQL2,binds,options)})
+    let SQL2=`delete from system.\"Order\" where order_id=(:id)`;
+    SimpleExecute(SQL1,binds,options,false)
+        .then(function(result){SimpleExecute(SQL2,binds,options,false)})
         .then(function(result)
         {console.log("Deleted");
         res.send(true);
         });
-    console.log("Номер заказа: "+id);
+    //console.log("Номер заказа: "+id);
 });
-// Report an error
 
-
-// Display query results
-
-
-// Prepare HTML header
-
-// Prepare HTML foo
 process
     .on('SIGTERM', function() {
         console.log("\nTerminating");
@@ -437,12 +361,6 @@ process
         process.exit(0);
     });
 
-function doRelease(connection) {
-    connection.close(
-        function(err) {
-            if (err) {
-                console.error(err.message);
-            }
-        });
-}
-app.listen(3000,function(){console.log("server listening...");});
+app.listen(3000,function(){
+    console.log("server listening on port 3000");
+});
