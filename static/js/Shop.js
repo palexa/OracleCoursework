@@ -64,13 +64,13 @@ var row = function (computer) {
         data+="<td>" + computer[i] + "</td>";
     }
     return data;
-}
+};
 
 var options = function (employee) {
     let data="";
     data+="<option value='" + employee[0] + "'>" + employee[1] + "</option>";
     return data;
-}
+};
 
 $("form").submit(function (e) {
     e.preventDefault();

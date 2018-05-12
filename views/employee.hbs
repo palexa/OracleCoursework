@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список пользователей</title>
+    <script src="../js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/styles.css">
+    <link href="../css/registration.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="employee_form">
+
+
+<div class="form_box" id="content1">
+
+    <label for="computer_name">Имя компьютера:</label>
+    <input type="text" id="computer_name" required />
+
+    <label for="processor">Процессор</label>
+    <input type="text" id="processor" required />
+
+    <label for="video">Видеокарта:</label>
+    <input type="text" id="video" required />
+
+    <label for="disk">Жёсткий диск</label>
+    <input type="password" id="disk" required />
+
+    <label for="ram">Оперативная память:</label>
+    <input type="text" id="ram" required />
+
+    <label for="price">Цена:</label>
+    <input type="text" id="price" required />
+
+    <label>Производитель:</label>
+    <div class="content_employee" >
+        <div class="select-wrapper">
+            <select name='manufactures' id='manufactures'>
+            </select>
+            <div class="select-arrow-1"></div>
+        </div>
+    </div>
+    <input type="text" id="manufacture" required disabled/>
+
+    <button type="submit" id="button1" class="btn_submit">Добавить компьютер</button>
+    <h3 style="color:red;" id="incorrect_computer"></h3>
+</div>
+<div class="form_box" id="content2">
+        <label for="monitor_name">Название монитора:</label>
+        <input type="text" id="monitor_name" required />
+
+        <button type="submit" id="button2" class="btn_submit">Добавить монитор</button>
+        <h3 style="color:red;" id="incorrect_monitor"></h3>
+</div>
+<div class="form_box" id="content3">
+
+        <label for="name_surname">Имя и Фамилия:</label>
+        <input type="text" id="name_surname" required />
+
+        <label for="chief">Начальник</label>
+    <div class="content_employee" >
+        <div class="select-wrapper">
+            <select name='employees' id='employees'>
+
+            </select>
+            <div class="select-arrow-1"></div>
+        </div>
+    </div>
+        <input type="text" id="chief" required disabled/>
+
+        <button type="submit" id="button3" class="btn_submit">Добавить работника</button>
+        <h3 style="color:red;" id="incorrect_employee"></h3>
+</div>
+
+</div>
+<div style="top: 48vh; left: 48vw; position: absolute; display: none" id="add"><h3>Добавленно</h3></div>
+
+<script>
+    let div=document.querySelector("#incorrect");
+    // Получение одного пользователя
+    function GetUser(login, password,name,surname,num) {
+        $.ajax({
+            url: "/api/registration/?"+login,
+            type: "GET",
+            contentType: "application/json",
+            success: function (exist) {
+                console.log(exist);
+                if(exist){ div.innerHTML=`Логин уже используется`;}
+                else {CreateUser(login, password,name,surname,num)}
+            }
+        });
+    }
+    // Добавление пользователя
+    function CreateUser(login,password,name,surname,num) {
+        $.ajax({
+            url: "api/users",
+            contentType: "application/json",
+            method: "POST",
+            data: JSON.stringify({
+                login: login,
+                password: password,
+                name: name,
+                surname:surname,
+                num:num
+            }),
+            success: function (res) {
+                window.location="/";
+            }
+        })
+    }
+
+    //отправка формы
+    $("#button1").click(function (e) {
+        $('#content1 input[required]').addClass('req');
+        e.preventDefault();
+        let login = document.querySelector("#login").value;
+        let password = document.querySelector("#password").value;
+        let name = document.querySelector("#name").value;
+        let surname = document.querySelector("#surname").value;
+        let num = document.querySelector("#num").value;
+        if(login&&password&&name&&surname&&num){
+            //GetUser(login, password,name,surname,num);
+        }
+    });
+    $("#button2").click(function (e) {
+        $('#content2 input[required]').addClass('req');
+
+        document.querySelector("#add").style.display="flex";
+        setTimeout(function () {
+            document.querySelector("#add").style.display="none"
+        },1000);
+        let login = document.querySelector("#login").value;
+        let password = document.querySelector("#password").value;
+        let name = document.querySelector("#name").value;
+        let surname = document.querySelector("#surname").value;
+        let num = document.querySelector("#num").value;
+        if(login&&password&&name&&surname&&num){
+            //GetUser(login, password,name,surname,num);
+        }
+    });
+    $("#button3").click(function (e) {
+        $('#content3 input[required]').addClass('req');
+        e.preventDefault();
+        let login = document.querySelector("#login").value;
+        let password = document.querySelector("#password").value;
+        let name = document.querySelector("#name").value;
+        let surname = document.querySelector("#surname").value;
+        let num = document.querySelector("#num").value;
+        if(login&&password&&name&&surname&&num){
+            //GetUser(login, password,name,surname,num);
+        }
+    });
+    function GetEmployees() {
+        $.ajax({
+            url: "/api/employees",
+            type: "GET",
+            contentType: "application/json",
+            success: function (employees) {
+                var rows = "";
+                $.each(employees, function (index, user) {
+                    // добавляем полученные элементы в таблицу
+                    rows += options(user);
+                });
+                $("#employees").append(rows);
+            }
+        });
+    }
+    function GetManufactures() {
+        $.ajax({
+            url: "/api/manufactures",
+            type: "GET",
+            contentType: "application/json",
+            success: function (employees) {
+                var rows = "";
+                $.each(employees, function (index, user) {
+                    // добавляем полученные элементы в таблицу
+                    rows += options(user);
+                });
+                $("#manufactures").append(rows);
+            }
+        });
+    }
+    var options = function (employee) {
+        let data="";
+        data+="<option value='" + employee[0] + "'>" + employee[1] + "</option>";
+        return data;
+    };
+
+    let employeesSelect = employees;
+    let manufacturesSelect = manufactures;
+    let chuefId=0;
+    let manufactureId=0;
+    function changeOption(){
+        let selection = document.getElementById("chief");
+        let selectedOption = employeesSelect.options[employeesSelect.selectedIndex];
+        selection.value = selectedOption.text;
+        chuefId=selectedOption.value;
+    }
+
+    function manufactureOption(){
+        let selection = document.getElementById("manufacture");
+        let selectedOption = manufacturesSelect.options[manufacturesSelect.selectedIndex];
+        selection.value = selectedOption.text;
+        manufactureId=selectedOption.value;
+    }
+    employeesSelect.addEventListener("change", changeOption);
+    manufacturesSelect.addEventListener("change", manufactureOption);
+    GetManufactures();
+    GetEmployees();
+</script>
+</body>
+</html>

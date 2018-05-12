@@ -98,6 +98,18 @@ app.get("/api/employees",function (request,response) {
             console.log(error);
         });
 });
+app.get("/api/manufactures",function (request,response) {
+    let SQLselect='SELECT * FROM C##admin_user.manufacture';
+    SimpleExecute(SQLselect,[],{},false)
+        .then(function (result) {
+            let res=result;
+            //console.log(res.rows[0][1]);
+            response.send(res.rows);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+});
 app.get("/api/newOrder",function (request,response) {
     let id=request._parsedOriginalUrl.query;
     employeeId=id;
@@ -153,6 +165,7 @@ app.get("/api/registration",function (request,response) {
         });
 });
 app.get("/",function (request,response) {
+    console.log("Запрос станицы");
     response.render("Enter.hbs");
 });
 app.get("/shop",function (request,response) {
@@ -247,6 +260,9 @@ app.get("/api/clientOrders",function (req,res) {
        .then(function (resource) {
            res.send(resource.rows);
        });
+});
+app.get("/employee/cabinet",function (request,response) {
+    response.render("employee.hbs");
 });
 app.post("/api/users", jsonParser, function (req, res) {
     //console.log(req.body);

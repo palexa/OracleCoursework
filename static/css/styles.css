@@ -47,7 +47,7 @@ th{
 }
 
 .small_table{
-    max-width: 20%;
+    width: 19vw;
 }
 
 .enter{
@@ -103,6 +103,10 @@ button:disabled {
     display: flex;
     flex-direction: row;
 }
+.employee_form{
+    display: flex;
+    flex-direction: row;
+}
 .form_box {
     width: 300px;
     margin: 20px;
@@ -116,6 +120,8 @@ button:disabled {
     -webkit-align-items: center;
     -ms-flex-align: center;
     align-items: center;
+    border: #7B899B solid 2px;
+    border-radius: 5px;
 }
 label {
     font-size: 13px;
@@ -124,7 +130,6 @@ label {
 
 }
 .form_box input {
-
     border: 2px solid #cfcfcf;
     border-radius: 5px;
     font-size: 14px;
@@ -146,6 +151,7 @@ label {
     outline: none;
     border-color: #07a6e6;
 }
+
 
 /** {*/
     /*color: #6C7231;*/
@@ -205,6 +211,13 @@ label {
 #selection{
     margin-top: 5px;
     margin-left: 10px;
+}
+
+.set_table{
+    border: 1px solid green;
+    width:20vw;
+    height: 15vh;
+    overflow: auto;
 }
 
 

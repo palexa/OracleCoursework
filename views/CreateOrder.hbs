@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Список пользователей</title>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="../js/jquery-3.3.1.js" ></script>
     <link href="../css/styles.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -34,14 +34,16 @@
     </div>
 </form>
 </div>
-<div >
+<div class="newOrder_button">
     <button type="submit"  id="save" disabled>Заказать</button>
 </div>
-<table class="table table-condensed table-striped table-bordered">
+<div class="set_table">
+<table class="small_table">
     <thead><tr><th>Компьютер</th><th>Монитор</th></tr></thead>
     <tbody>
     </tbody>
 </table>
+</div>
 <div>
 <button id="create">Оформить заказ</button>
 <button id="cancel">Сбросить</button>
@@ -146,7 +148,6 @@
             success: function (user) {
                 console.log(user);
                 window.location="/shop";
-               // $("tr[data-rowid='" + user.id + "']").remove();
             }
         })
     }
