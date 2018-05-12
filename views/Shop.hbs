@@ -2,7 +2,6 @@
 <head>
     <title>Shop</title>
     <link href="../css/styles.css" rel="stylesheet" type="text/css">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../css/index.css" rel="stylesheet" type="text/css">
     <script src="../js/jquery-3.3.1.js" ></script>
 </head>
@@ -12,7 +11,7 @@
 <h1>Магазин</h1>
     <h3>Компьютеры</h3>
 <div id="List"></div>
-<table class="table table-condensed table-striped table-bordered">
+<table cellspacing="0">
     <thead>
     <tr>
         <th>Id</th>
@@ -29,26 +28,29 @@
 
 </table>
     <h3>Мониторы</h3>
-    <table class="table table-condensed table-striped table-bordered">
+    <table class="small_table" cellspacing="0">
         <thead>
         <tr>
             <th>Id</th>
-            <th>Имя</th>
+            <th>Монитор</th>
         </tr>
         </thead>
         <tbody id="monitors">
         </tbody>
     </table>
     <fieldset>
-        <legend>Выберите продавца:
-        </legend>
-        <form name='myForm' >
+        <legend>Выберите продавца:</legend>
+       <div class="content_employee" >
+           <div class="select-wrapper">
             <select name='language' id='language'>
             </select>
-        </form>
+            <div class="select-arrow-1"></div>
+        </div>
         <div id='selection'></div>
         </div>
+        <div class="newOrder_button">
         <button id="create" disabled>Create</button>
+        </div>
     </fieldset>
 </main>
 {{> footer}}

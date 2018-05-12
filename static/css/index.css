@@ -8,8 +8,8 @@ body {
     font-size: 1.8rem;
     line-height: 1.618;
     max-width: 38em;
-
     padding: 0 10vw;
+    margin: 0;
     color: #4a4a4a;
     background-color: #f9f9f9;
 
@@ -50,7 +50,6 @@ h6 {
 
 /* RESET LAYOUT AND ADD COLORS */
 body {
-
     max-width: inherit;
     background: #f9f9f9;
     color: #4a4a4a;
@@ -75,6 +74,7 @@ main {
     -webkit-box-shadow: -5px 0px 23px -1px rgba(107,138,143,1);
     -moz-box-shadow: -5px 0px 23px -1px rgba(107,138,143,1);
     box-shadow: -5px 0px 23px -1px rgba(107,138,143,1);
+    overflow: auto;
 }
 aside {
     background: #eee;
@@ -90,6 +90,7 @@ body {
 nav,main,aside{
     overflow: hidden;
 }
+main {overflow: auto}
 header {
     grid-row: 1;
     grid-column: 1 / 4;

@@ -4,22 +4,6 @@ body{
     flex-direction: column;
     padding: 5px;
 }
-input{
-    width: 200px;
-    margin-top: 12px;
-    line-height: 20px;
-    font-size: 14px;
-    padding: 12px;
-    border: #e6ecf0 1px solid;
-    border-radius: 3px;
-    background: #f9f8ac;
-}
-input:focus {
-    border-radius: 5px;
-    color: #000000;
-    outline:none;
-    border: 1px solid green;
-}
 button{
     margin-top: 12px;
     height: 50px;
@@ -30,9 +14,44 @@ button{
     font-size: 14px;
     text-align: center;
     outline: none;
-    border-radius: 100px;
+    border-radius: 5px;
     align-content: center;
     border: 1px #41b5f4 solid;
+}
+
+table{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    max-width: 70%;
+    width: 70%;
+    text-align: center;
+    border-collapse: collapse;
+    border-top: 7px solid ;
+    border-bottom: 7px solid #9baff1;
+}
+td{
+    background: #a1f0aa;
+    border-right: 1px solid #aabcfe;
+    border-left: 1px solid #aabcfe;
+    color: black;
+    padding: 8px;
+}
+th{
+    font-size: 13px;
+    font-weight: normal;
+    background: #e8edff;
+    border-right: 1px solid #9baff1;
+    border-left: 1px solid #9baff1;
+    color: #039;
+    padding: 8px;
+}
+
+.small_table{
+    max-width: 20%;
+}
+
+.enter{
+    background: cadetblue;
 }
 button:hover {
     background: rgba(103, 190, 234,0.3);
@@ -45,7 +64,7 @@ button:active {
     box-shadow:
             0 0 0 2px white,
             0 0 0 4px #41b5f4;
-    background: #4283c7;
+    background: #32bc39;
     color: white;
     transition: background .7s;
 }
@@ -57,14 +76,135 @@ button:disabled {
     transition: background .7s;
 }
 .content{
-    justify-content: center;
-    align-content: center;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: center;
+    justify-content: flex-start;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
     width: 50vw;
     height: 50vh;
     margin: 25vh 25vw;
 }
 
-.myForm{
+.content_employee{
+    display: flex;
+    flex-direction: row;
+}
+.form_box {
+    width: 300px;
+    margin: 20px;
     display: flex;
     flex-direction: column;
+    -ms-flex-pack: center;
+    justify-content: flex-start;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
 }
+label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #444444;
+
+}
+.form_box input {
+
+    border: 2px solid #cfcfcf;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #444444;
+    padding: 7px 7px 8px;
+    width: 250px;
+    margin-bottom: 20px;
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+}
+.form_box .req:invalid {
+    border: 2px solid red;
+}
+.form_box .req:valid {
+    border: 2px solid green;
+}
+.form_box input:focus {
+    outline: none;
+    border-color: #07a6e6;
+}
+
+/** {*/
+    /*color: #6C7231;*/
+    /*font-family: Helvetica;*/
+    /*font-weight: bold;*/
+/*}*/
+
+#content {
+    width: 300px;
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px dotted gray;
+}
+
+.select-wrapper {
+    position: relative;
+    width: 300px;
+    margin-top: 5px;
+    margin-bottom: 35px;
+    border: 1px solid #2a85a0;
+    border-radius: 3px;
+}
+
+.select-wrapper:hover {
+    box-shadow: 0px 0px 3px gray;
+}
+
+.select-wrapper select {
+    width: 300px;
+    height: 28px;
+    padding: 0 20px 0 7px;
+    background: transparent;
+    border: 0;
+    appearance: none;            /* remove arrow        */
+    -webkit-appearance: none;    /* remove arrow Chrome */
+    -moz-appearance: none;       /* remove arrow FF     */
+}
+.select-wrapper select::-ms-expand{
+    display: none;             /* remove arrow IE     */
+}
+
+
+.select-arrow-1 {
+    position: absolute;
+    z-index: 9999;
+    right: 4px;
+    bottom: 5px;
+    border: 8px solid;
+    border-color: white white #6C7231 white;
+    border-right: 0;
+}
+
+.newOrder_button{
+    margin-bottom: 20px;
+}
+
+#selection{
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+

@@ -26,9 +26,13 @@ $("#registration_button").click(function (e) {
     window.location="/Registration";
 });
 
-$("form").submit(function (e) {
+$("#submit_button").click(function (e) {
+    $('input[required]').addClass('req');
     e.preventDefault();
-    let login = this.elements["login"].value;
-    let password = this.elements["password"].value;
+    let login = document.querySelector("#login").value;
+    let password = document.querySelector("#password").value;
+    console.log("Login password: "+login+" "+password);
+    if(login&&password){
     LogIn(login, password);
+    }
 });

@@ -4,40 +4,49 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Список пользователей</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <link href="../css/styles.css">
+    <link href="../css/styles.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <h2>Оформление заказа</h2>
+<div class="content_employee">
 <form name='myForm' class="myForm">
-    <select name='computer' id='computer' size="4">
+    <label>Компьютер:</label>
+    <div class="select-wrapper">
+    <select name='computer' id='computer' size="0">
     </select>
-    <select name='monitor' id='monitor' size="4">
+        <div class="select-arrow-1"></div>
+    </div>
+    <label>Монитор:</label>
+    <div class="select-wrapper">
+    <select name='monitor' id='monitor' size="0">
     </select>
+        <div class="select-arrow-1"></div>
+    </div>
 </form>
 <form name="userForm">
-    <input type="hidden" name="id" value="0" />
-    <div class="form-group">
-        <label for="name">Компьютер:</label>
+    <!--<input type="hidden" name="id" value="0" />-->
+    <div class="form_box">
         <input class="form-control" name="computer" id="currentComp" disabled/>
     </div>
-    <div class="form-group">
-        <label for="age">Монитор:</label>
+    <div class="form_box">
         <input class="form-control" name="monitor" id="currentMon" disabled/>
     </div>
 </form>
-<div class="panel-body">
-    <button type="submit" class="btn btn-sm btn-primary" id="save" disabled>Заказать</button>
+</div>
+<div >
+    <button type="submit"  id="save" disabled>Заказать</button>
 </div>
 <table class="table table-condensed table-striped table-bordered">
     <thead><tr><th>Компьютер</th><th>Монитор</th></tr></thead>
     <tbody>
     </tbody>
 </table>
-<button class="btn btn-sm btn-primary" id="create">Оформить заказ</button>
-<button class="btn btn-sm btn-primary" id="cancel">Сбросить</button>
-<script>
+<div>
+<button id="create">Оформить заказ</button>
+<button id="cancel">Сбросить</button>
+</div>
+    <script>
     let CurrentOrderId;
     let computerSelect = myForm.computer;
     let monitorSelect = myForm.monitor;

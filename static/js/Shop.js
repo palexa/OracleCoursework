@@ -79,18 +79,13 @@ $("form").submit(function (e) {
 $("#create").click(function () {
 NewOrder(selectedId);
 });
-// $("#profile_button").click(function () {
-//     console.log("Profile");
-//     window.location="profile";
-// });
 
-myForm.style.backgroundColor="green";
-let languagesSelect = myForm.language;
+let languagesSelect = language;
 let selectedId=0;
 function changeOption(){
     let selection = document.getElementById("selection");
     let selectedOption = languagesSelect.options[languagesSelect.selectedIndex];
-    selection.textContent = "Вы выбрали: " + selectedOption.text;
+    selection.textContent = "Продавец: " + selectedOption.text;
     $('#create').removeAttr('disabled');
     selectedId=selectedOption.value;
 }

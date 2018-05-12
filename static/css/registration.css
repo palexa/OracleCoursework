@@ -1,16 +1,27 @@
 .form_box {
     width: 300px;
     margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    -ms-flex-pack: center;
+    justify-content: flex-start;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
 }
 .form_box label {
     font-size: 13px;
     font-weight: bold;
     color: #444444;
-    display: block;
+
 }
 .form_box input {
-    display: block;
+
     border: 2px solid #cfcfcf;
+    border-radius: 5px;
     font-size: 14px;
     color: #444444;
     padding: 7px 7px 8px;
@@ -30,27 +41,56 @@
     outline: none;
     border-color: #07a6e6;
 }
-.form_box .btn_submit {
-    border: none;
-    width: 180px;
+button{
+    margin-top: 12px;
+    height: 50px;
+    display: inline-block;
+    background: #69db75;
+    line-height: 20px;
+    padding: 12px;
+    font-size: 14px;
     text-align: center;
-    background: #07a6e6;
-    font-size: 13px;
-    font-weight: bold;
-    color: #ffffff;
+    outline: none;
+    border-radius: 5px;
+    align-content: center;
+    border: 1px #41b5f4 solid;
+}
+button:hover {
+    background: rgba(103, 190, 234,0.3);
     cursor: pointer;
-    height: 35px;
-    line-height: 28px;
-    padding: 0;
+    transition: background .5s;
 }
-.form_box .btn_submit:hover {
-    background: #009ac2;
+button:active {
+    text-align: center;
+    border: 1px solid #41b5f4;
+    box-shadow:
+            0 0 0 2px white,
+            0 0 0 4px #41b5f4;
+    background: #32bc39;
+    color: white;
+    transition: background .7s;
 }
-.form_box .btn_submit:active {
-    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.2);
-}
-.form_box .btn_submit.disabled,
-.form_box .btn_submit.disabled:hover {
-    background: #afdde6;
-    cursor: default;
-}
+/*.form_box .btn_submit {*/
+    /*border: none;*/
+    /*width: 180px;*/
+    /*text-align: center;*/
+    /*background: #07a6e6;*/
+    /*font-size: 13px;*/
+    /*font-weight: bold;*/
+    /*color: #ffffff;*/
+    /*cursor: pointer;*/
+    /*height: 35px;*/
+    /*line-height: 28px;*/
+    /*padding: 0;*/
+/*}*/
+/*.form_box .btn_submit:hover {*/
+    /*background: #009ac2;*/
+/*}*/
+/*.form_box .btn_submit:active {*/
+    /*box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.2);*/
+/*}*/
+/*.form_box .btn_submit.disabled,*/
+/*.form_box .btn_submit.disabled:hover {*/
+    /*background: #afdde6;*/
+    /*cursor: default;*/
+/*}*/
