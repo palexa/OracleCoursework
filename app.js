@@ -164,6 +164,39 @@ app.get("/api/registration",function (request,response) {
             console.log(error);
         });
 });
+app.get("/api/createComp",function (request,response) {
+    let name=request._parsedOriginalUrl.query;
+    let loginExist=false;
+    let SQLselect='SELECT name FROM C##admin_user.computer';
+    SimpleExecute(SQLselect,[],{},true)
+        .then(function (result) {
+            let res=result;
+            return res.rows;
+        })
+        .then(function (rows) {
+            for (let i=0;i<rows.length;i++){
+                if(name==rows[i][0]){
+                    console.log("Exist!!!");
+                    loginExist=true;
+                }
+            }
+        })
+        .then(function () {
+            if(loginExist){
+                response.send(loginExist);
+            }
+            else{
+                console.log("Не найден");
+                response.send(loginExist)
+            }
+        })
+        .then(function () {
+            loginExist=false;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+});
 app.get("/",function (request,response) {
     console.log("Запрос станицы");
     response.render("Enter.hbs");
@@ -196,56 +229,6 @@ app.get("/api/currentOrder",function (request,response) {
 });
 app.get("/index",function (request,response) {
     response.render("crud.hbs")
-});
-app.get("/api/users/:login&:password",function (request,response) {
-
-var login=request.params.login;
-//console.log(login);
-var password=request.params.password;
-//console.log(password);
-let SQLselect='SELECT pass,name,surname,num FROM C##admin_user.users WHERE login= :login';
-    let options =  { maxRows: 1
-    };
-    let binds =
-        [login]
-    ;
-SimpleExecute(SQLselect,binds,options,true)
-    .then(function (result) {
-       let res=result;
-       //Проверка на наличие логина
-       if(!(res.rows[0]===undefined)){
-           let userPassword=res.rows[0][0];
-           let userName=res.rows[0][1];
-           let userSurname=res.rows[0][2];
-           let userNum=res.rows[0][3];
-            if(res.rows[0][0]==password){console.log("Верные данные");
-                response.write("<style>" +
-                    "body {background:#FFFFFF;color:#000000;font-family:Arial,sans-serif;margin:40px;padding:10px;font-size:12px;text-align:center;}" +
-                    "h1 {margin:0px;margin-bottom:12px;background:#FF0000;text-align:center;color:#FFFFFF;font-size:28px;}" +
-                    "table {border-collapse: collapse;   margin-left:auto; margin-right:auto;}" +
-                    "td, th {padding:8px;border-style:solid}" +
-                    "</style>\n");
-                response.write("<table>");
-                for(var i=1;i<res.rows[0].length;i++) {
-                    response.write("<tr>");
-                    response.write("<td>" +res.metaData[i]["name"]+ "</td>");
-                    response.write("<td>" + res.rows[0][i] + "</td>");
-                    response.write("</tr>");
-                }
-                response.write("</table>");
-
-                response.end();
-            }
-            else console.log("Неверные данные");
-        }
-        else {
-           console.log("Несуществующий логин");
-           response.render("crud.hbs");
-       }
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
 });
 app.get("/api/clientOrders",function (req,res) {
    let SQL=`select
@@ -292,6 +275,30 @@ app.post("/api/users", jsonParser, function (req, res) {
     SimpleExecute(insertSql,binds,options,true);
     res.send("кидаем в бд");
 });
+app.post("/employee/api/computers", jsonParser, function (req, res) {
+    console.log(req.body);
+    if(!req.body) return res.sendStatus(400);
+    let name = req.body.name;
+    let processor = req.body.processor;
+    let video = req.body.video;
+    let disk = req.body.disk;
+    let ram = req.body.ram;
+    let price = Number(req.body.price);
+    let manufactureId = Number(req.body.manufactureId);
+
+    let options = {
+        autoCommit: true
+    };
+    let insertSql = `INSERT INTO C##admin_user.computer 
+    (manufacture_code,processor,Disk,Video,RAM,Price,Name)
+    values (:manufacture_code, :processor ,:Disk, :Video , :RAM, :Price, :Name)`;
+    let binds = {
+            manufacture_code: manufactureId, processor: processor ,Disk: disk, Video: video,RAM:ram,Price:price,Name:name
+        };
+    SimpleExecute(insertSql,binds,options,false);
+    res.send("кидаем в бд");
+});
+
 app.post("/api/login",jsonParser,function (request,response) {
     //console.log(request.body);
     if(!request.body) return response.sendStatus(400);
@@ -365,6 +372,71 @@ app.delete("/api/orders/:id", function(req, res){
         res.send(true);
         });
     //console.log("Номер заказа: "+id);
+});
+
+app.get("/api/createMonitor",function (request,response) {
+    let name=request._parsedOriginalUrl.query;
+    let loginExist=false;
+    let SQLselect='SELECT name FROM C##admin_user.monitor';
+    SimpleExecute(SQLselect,[],{},false)
+        .then(function (result) {
+            let res=result;
+            return res.rows;
+        })
+        .then(function (rows) {
+            for (let i=0;i<rows.length;i++){
+                if(name==rows[i][0]){
+                    console.log("Exist!!!");
+                    loginExist=true;
+                }
+            }
+        })
+        .then(function () {
+            if(loginExist){
+                response.send(loginExist);
+            }
+            else{
+                console.log("Не найден");
+                response.send(loginExist)
+            }
+        })
+        .then(function () {
+            loginExist=false;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+});
+app.post("/employee/api/monitors", jsonParser, function (req, res) {
+    console.log(req.body);
+    if(!req.body) return res.sendStatus(400);
+    let name = req.body.name;
+    let options = {
+        autoCommit: true
+    };
+    let insertSql = `INSERT INTO C##admin_user.monitor (name)
+    values (:Name)`;
+    let binds = {
+        Name:name
+    };
+    SimpleExecute(insertSql,binds,options,false);
+    res.send("кидаем в бд");
+});
+app.post("/employee/api/employees", jsonParser, function (req, res) {
+    console.log(req.body);
+    if(!req.body) return res.sendStatus(400);
+    let name_surname = req.body.name_surname;
+    let chief_id = req.body.chief_id;
+    let options = {
+        autoCommit: true
+    };
+    let insertSql = `INSERT INTO C##admin_user.employee (name_surname,chief_id)
+    values (:name_surname,:chief_id)`;
+    let binds = {
+        name_surname:name_surname,chief_id:chief_id
+    };
+    SimpleExecute(insertSql,binds,options,false);
+    res.send("кидаем в бд");
 });
 
 process

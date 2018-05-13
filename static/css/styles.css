@@ -196,7 +196,7 @@ label {
 
 .select-arrow-1 {
     position: absolute;
-    z-index: 9999;
+    /*z-index: 9999;*/
     right: 4px;
     bottom: 5px;
     border: 8px solid;
@@ -218,6 +218,29 @@ label {
     width:20vw;
     height: 15vh;
     overflow: auto;
+}
+.small_message{
+    top: 40vh;
+    left: 42%;
+    width: 300px;
+    height: 100px;
+    border: solid 1px black;
+    border-radius: 5px;
+    background: #2a85a0;
+    color: white;
+    align-content: center;
+    justify-content: center;
+    position: absolute;
+    display: none;
+}
+#mask {
+    background-color:rgba(0,0,0,.3);
+    height:100%;
+    position:fixed;
+    width:100%;
+    top:0;
+    left:0;
+    display:none;
 }
 
 

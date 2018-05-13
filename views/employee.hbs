@@ -43,14 +43,14 @@
     <input type="text" id="manufacture" required disabled/>
 
     <button type="submit" id="button1" class="btn_submit">Добавить компьютер</button>
-    <h3 style="color:red;" id="incorrect_computer"></h3>
+
 </div>
 <div class="form_box" id="content2">
         <label for="monitor_name">Название монитора:</label>
         <input type="text" id="monitor_name" required />
 
         <button type="submit" id="button2" class="btn_submit">Добавить монитор</button>
-        <h3 style="color:red;" id="incorrect_monitor"></h3>
+
 </div>
 <div class="form_box" id="content3">
 
@@ -69,85 +69,146 @@
         <input type="text" id="chief" required disabled/>
 
         <button type="submit" id="button3" class="btn_submit">Добавить работника</button>
-        <h3 style="color:red;" id="incorrect_employee"></h3>
 </div>
 
 </div>
-<div style="top: 48vh; left: 48vw; position: absolute; display: none" id="add"><h3>Добавленно</h3></div>
+<div id="mask"></div>
+<div class="small_message" id="add"><h3 id="text"></h3></div>
+
 
 <script>
-    let div=document.querySelector("#incorrect");
+    let employeesSelect = employees;
+    let manufacturesSelect = manufactures;
+    let chiefId=0;
+    let manufactureId=0;
     // Получение одного пользователя
-    function GetUser(login, password,name,surname,num) {
+    function GetComputer(computer_name,processor,video,disk,ram,price) {
         $.ajax({
-            url: "/api/registration/?"+login,
+            url: "/api/createComp/?"+computer_name,
             type: "GET",
             contentType: "application/json",
             success: function (exist) {
                 console.log(exist);
-                if(exist){ div.innerHTML=`Логин уже используется`;}
-                else {CreateUser(login, password,name,surname,num)}
+                if(exist){
+                    showMessage("existComputer","Такой компьютер уже есть");
+                }
+                else {CreateComputer(computer_name,processor,video,disk,ram,price)}
+            }
+        });
+    }
+    function GetMonitor(name) {
+        $.ajax({
+            url: "/api/createMonitor/?"+name,
+            type: "GET",
+            contentType: "application/json",
+            success: function (exist) {
+                console.log(exist);
+                if(exist){
+                    showMessage("existComputer","Такой монитор уже есть");
+                }
+                else {CreateMonitor(name)}
             }
         });
     }
     // Добавление пользователя
-    function CreateUser(login,password,name,surname,num) {
+    function CreateComputer(computer_name,processor,video,disk,ram,price) {
         $.ajax({
-            url: "api/users",
+            url: "api/computers",
             contentType: "application/json",
             method: "POST",
             data: JSON.stringify({
-                login: login,
-                password: password,
-                name: name,
-                surname:surname,
-                num:num
+                name: computer_name,
+                processor: processor,
+                video: video,
+                disk:disk,
+                ram:ram,
+                price:price,
+                manufactureId:manufactureId
             }),
-            success: function (res) {
-                window.location="/";
+            success: function () {
+                showMessage("add","Компьютер добавлен");
             }
         })
     }
+    function CreateMonitor(name) {
+        $.ajax({
+            url: "api/monitors",
+            contentType: "application/json",
+            method: "POST",
+            data: JSON.stringify({
+                name: name
+            }),
+            success: function () {
+                showMessage("add","Монитор добавлен");
+            }
+        })
+    }
+    function CreateEmployee(info) {
 
+        $.ajax({
+            url: "api/employees",
+            contentType: "application/json",
+            method: "POST",
+            data: JSON.stringify({
+                name_surname: info,
+                chief_id:chiefId
+            }),
+            success: function () {
+                showMessage("add","Работник добавлен");
+            }
+        })
+    }
+    function showMessage(id,message) {
+        document.querySelector("#text").innerHTML=message;
+        $("#mask").fadeIn(500,function () {
+            $("#add").fadeIn(1000,function () {
+                $("#add").fadeOut(3000,function () {
+                    $("#mask").fadeOut(250);
+                });
+
+            })
+        });
+
+
+    }
     //отправка формы
     $("#button1").click(function (e) {
         $('#content1 input[required]').addClass('req');
         e.preventDefault();
-        let login = document.querySelector("#login").value;
-        let password = document.querySelector("#password").value;
-        let name = document.querySelector("#name").value;
-        let surname = document.querySelector("#surname").value;
-        let num = document.querySelector("#num").value;
-        if(login&&password&&name&&surname&&num){
-            //GetUser(login, password,name,surname,num);
+        let computer_name = document.querySelector("#computer_name").value;
+        let processor = document.querySelector("#processor").value;
+        let video = document.querySelector("#video").value;
+        let disk = document.querySelector("#disk").value;
+        let ram = document.querySelector("#ram").value;
+        let price = document.querySelector("#price").value;
+        if(computer_name&&processor&&video&&disk&&ram&&price&&manufactureId){
+            $('#content1 input[required]').removeClass('req');
+            document.querySelector("#computer_name").value="";
+            document.querySelector("#processor").value="";
+            document.querySelector("#video").value="";
+            document.querySelector("#disk").value="";
+            document.querySelector("#ram").value="";
+            document.querySelector("#price").value="";
+            GetComputer(computer_name, processor,video,disk,ram,price);
         }
     });
     $("#button2").click(function (e) {
         $('#content2 input[required]').addClass('req');
-
-        document.querySelector("#add").style.display="flex";
-        setTimeout(function () {
-            document.querySelector("#add").style.display="none"
-        },1000);
-        let login = document.querySelector("#login").value;
-        let password = document.querySelector("#password").value;
-        let name = document.querySelector("#name").value;
-        let surname = document.querySelector("#surname").value;
-        let num = document.querySelector("#num").value;
-        if(login&&password&&name&&surname&&num){
-            //GetUser(login, password,name,surname,num);
+        let name = document.querySelector("#monitor_name").value;
+        if(name){
+            $('#content2 input[required]').removeClass('req');
+            document.querySelector("#monitor_name").value="";
+            GetMonitor(name);
         }
     });
     $("#button3").click(function (e) {
         $('#content3 input[required]').addClass('req');
         e.preventDefault();
-        let login = document.querySelector("#login").value;
-        let password = document.querySelector("#password").value;
-        let name = document.querySelector("#name").value;
-        let surname = document.querySelector("#surname").value;
-        let num = document.querySelector("#num").value;
-        if(login&&password&&name&&surname&&num){
-            //GetUser(login, password,name,surname,num);
+        let info = document.querySelector("#name_surname").value;
+        if(info&&chiefId){
+            $('#content3 input[required]').removeClass('req');
+            $('#content3 input[required]').value="";
+            CreateEmployee(info);
         }
     });
     function GetEmployees() {
@@ -180,30 +241,24 @@
             }
         });
     }
-    var options = function (employee) {
+    let options = function (employee) {
         let data="";
         data+="<option value='" + employee[0] + "'>" + employee[1] + "</option>";
         return data;
     };
-
-    let employeesSelect = employees;
-    let manufacturesSelect = manufactures;
-    let chuefId=0;
-    let manufactureId=0;
-    function changeOption(){
+    function chiefOption(){
         let selection = document.getElementById("chief");
         let selectedOption = employeesSelect.options[employeesSelect.selectedIndex];
         selection.value = selectedOption.text;
-        chuefId=selectedOption.value;
+        chiefId=selectedOption.value;
     }
-
     function manufactureOption(){
         let selection = document.getElementById("manufacture");
         let selectedOption = manufacturesSelect.options[manufacturesSelect.selectedIndex];
         selection.value = selectedOption.text;
         manufactureId=selectedOption.value;
     }
-    employeesSelect.addEventListener("change", changeOption);
+    employeesSelect.addEventListener("change", chiefOption);
     manufacturesSelect.addEventListener("change", manufactureOption);
     GetManufactures();
     GetEmployees();
