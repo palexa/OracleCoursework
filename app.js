@@ -43,10 +43,19 @@ async function SimpleExecute(insertSql,binds=[],options={},client=true) {
 }
 
 app.get("/profile",function (request,response) {
-    response.render("profile.hbs");
+    if (logIn){
+        response.render("profile.hbs");
+}
+else{
+    response.render("Enter.hbs")
+}
 });
 app.get("/orders",function (request,response) {
-    response.render("Orders.hbs");
+if(logIn){response.render("Orders.hbs");}
+else{
+    response.render("Enter.hbs")
+}
+
 });
 app.get("/api/profileData",function (request,response) {
     let SQLselect='SELECT name,surname,login,phone FROM C##admin_user.client where Client_Id=(:userId)';
@@ -129,7 +138,12 @@ app.get("/api/newOrder",function (request,response) {
     response.send();
 });
 app.get("/CreateOrder",function (request,response) {
-    response.render("CreateOrder.hbs");
+    if(logIn){
+    response.render("CreateOrder.hbs");}
+
+else{
+    response.render("Enter.hbs")
+}
 });
 app.get("/api/registration",function (request,response) {
     let login=request._parsedOriginalUrl.query;
@@ -212,6 +226,9 @@ app.get("/shop",function (request,response) {
 });
 app.get("/Registration",function (response,request) {
     request.render("Registration.hbs");
+});
+app.get("/CustomerEnter",function (response,request) {
+    request.render("CustomerEnter.hbs");
 });
 app.get("/api/currentOrder",function (request,response) {
     console.log("Получение текущего заказа");
@@ -339,6 +356,16 @@ app.post("/api/login",jsonParser,function (request,response) {
         .catch(function (error) {
             console.log(error);
         });
+});
+app.post("/Employee",jsonParser,function (request,response) {
+    //console.log(request.body);
+    if(!request.body) return response.sendStatus(400);
+    let login=request.body.login;
+    let password = request.body.password;
+   if(password=="admin"&&login=="admin"){
+       response.send(true);
+   }
+   else response.send(false);
 });
 app.post("/api/createSet",jsonParser,function (req,res) {
     console.log("Создание комплекта");

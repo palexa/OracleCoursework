@@ -25,6 +25,9 @@ $("#registration_button").click(function (e) {
     e.preventDefault();
     window.location="/Registration";
 });
+$("#customer_enter").click(function () {
+    window.location="/CustomerEnter";
+});
 
 $("#submit_button").click(function (e) {
     $('input[required]').addClass('req');
