@@ -7,8 +7,11 @@
     <script src="../js/jquery-3.3.1.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
     <link href="../css/registration.css" rel="stylesheet" type="text/css">
+    <link href="../css/index.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+{{> header}}
+<main>
 <div class="employee_form">
 
 
@@ -72,11 +75,15 @@
 </div>
 
 </div>
+</main>
+{{> footer}}
 <div id="mask"></div>
 <div class="small_message" id="add"><h3 id="text"></h3></div>
 
 
 <script>
+    document.querySelector(".Home").style.display="none";
+    document.querySelector(".Services").style.display="none";
     let employeesSelect = employees;
     let manufacturesSelect = manufactures;
     let chiefId=0;
@@ -263,5 +270,6 @@
     GetManufactures();
     GetEmployees();
 </script>
+<script src="../js/menu.js"></script>
 </body>
 </html>

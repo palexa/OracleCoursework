@@ -12,6 +12,7 @@ let app=express();
 let userId=0;
 let employeeId=0;
 let logIn=false;
+let adminLog=false;
 app.use(express.static(__dirname + "/static"));
 hbs.registerPartials(__dirname + "/views/partials");
 app.set("view engine", "hbs");
@@ -262,7 +263,9 @@ app.get("/api/clientOrders",function (req,res) {
        });
 });
 app.get("/employee/cabinet",function (request,response) {
-    response.render("employee.hbs");
+    if(adminLog){
+    response.render("employee.hbs");}
+    else response.render("Enter.hbs")
 });
 app.post("/api/users", jsonParser, function (req, res) {
     //console.log(req.body);
@@ -350,7 +353,7 @@ app.post("/api/login",jsonParser,function (request,response) {
             }
             else {
                 console.log("Несуществующий логин");
-                //response.render("crud.hbs");
+                response.send(false);
             }
         })
         .catch(function (error) {
@@ -364,6 +367,7 @@ app.post("/Employee",jsonParser,function (request,response) {
     let password = request.body.password;
    if(password=="admin"&&login=="admin"){
        response.send(true);
+       adminLog=true;
    }
    else response.send(false);
 });
